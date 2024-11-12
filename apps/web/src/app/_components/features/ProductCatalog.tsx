@@ -22,6 +22,14 @@ export default function ProductCatalog() {
 	const [query, setQuery] = useAtom(searchQueryAtom);
 	const router = useRouter();
 
+	const utils = api.useUtils();
+
+	const { mutate: addItem } = api.shoppingCart.addItem.useMutation({
+		onSuccess: async () => {
+			await utils.shoppingCart.getItems.invalidate();
+		},
+	});
+
 	// Using an infinite query to fetch products with pagination
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		api.product.getProducts.useInfiniteQuery(
